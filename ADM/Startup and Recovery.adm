@@ -1,0 +1,59 @@
+;This project is designed to create Group Policy Administrative Template Files (ADM\ADMX). These files are used in Group Policy to configure Startup and Recovery settings
+CLASS MACHINE
+CATEGORY "Startup and Recovery"
+	CATEGORY "System Failure"	
+		KEYNAME "SYSTEM\CurrentControlSet\Control\CrashControl"
+		POLICY "Automaticaly Restart"		
+			VALUENAME "AutoReboot"
+			VALUEON NUMERIC 1
+			VALUEOFF NUMERIC 0		
+		END POLICY
+
+		POLICY "Write an event to system log"		
+			VALUENAME "LogEvent"
+			VALUEON NUMERIC 1
+			VALUEOFF NUMERIC 0		
+		END POLICY
+		
+		POLICY "Dump File Type"
+			EXPLAIN !!DUMP			
+			PART "Write Dubugging Information" DROPDOWNLIST
+				ITEMLIST
+					NAME "(NONE)" VALUE NUMERIC 0
+					ACTIONLIST VALUENAME FilterPages VALUE DELETE END ACTIONLIST
+					NAME "Small Memory Dump (256 KB)" VALUE NUMERIC 3
+					ACTIONLIST VALUENAME FilterPages VALUE DELETE END ACTIONLIST
+					NAME "Kernel Memory Dump" VALUE NUMERIC 2
+					ACTIONLIST VALUENAME FilterPages VALUE DELETE END ACTIONLIST
+					NAME "Complete Memory Dump" VALUE NUMERIC 1
+					ACTIONLIST VALUENAME FilterPages VALUE DELETE END ACTIONLIST
+					NAME "Automactic memory dump" VALUE NUMERIC 7
+					ACTIONLIST VALUENAME FilterPages VALUE DELETE END ACTIONLIST
+					NAME "Active memory dump" VALUE NUMERIC 1
+					ACTIONLIST
+						VALUENAME FilterPages VALUE NUMERIC 1
+					END ACTIONLIST
+				END ITEMLIST
+			VALUENAME "CrashDumpEnabled"
+			END PART
+		END POLICY
+		
+		POLICY "Dump File"
+			EXPLAIN !!DumpFileExplain
+			PART "Set location path to save Memory DUMP file" EDITTEXT
+				VALUENAME "DumpFile"
+				DEFAULT "%SystemRoot%\MEMORY.DMP"
+				MAXLEN 255
+				REQUIRED
+				EXPANDABLETEXT
+			END PART
+			PART !!DumpFileExplain_text	text
+			END PART
+		END POLICY
+	END CATEGORY
+END CATEGORY
+
+[strings]
+DUMP="bla bla bla\nbla bla"
+DumpFileExplain="Test"
+DumpFileExplain_text="Example --> %SystemRoot%\MEMORY.DMP"
